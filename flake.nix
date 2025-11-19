@@ -5,7 +5,6 @@
   };
 
   outputs = inputs @ {
-    self,
     flake-parts,
     ...
   }:
@@ -13,12 +12,12 @@
       systems = ["x86_64-linux"];
       perSystem = {
         pkgs,
-        system,
         ...
       }: let
         project = (fromTOML (builtins.readFile ./src/pyproject.toml)).project;
         deps = map (x: pkgs.python3.pkgs.${x}.overridePythonAttrs {doCheck = false;}) project.dependencies;
       in {
+        # TODO: fix this
         packages.default = pkgs.python3.pkgs.buildPythonApplication {
           pname = project.name;
           version = project.version;
@@ -26,7 +25,6 @@
           pyproject = true;
           doCheck = false;
           build-system = [pkgs.python3.pkgs.setuptools];
-          propagatedBuildInputs = deps;
         };
         devShells.default = pkgs.mkShellNoCC {
           packages = [pkgs.python.withPackages (_: deps)];
