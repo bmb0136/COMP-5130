@@ -12,7 +12,7 @@ def mae(actual: pd.Series, expected: pd.Series) -> float:
 def mse(actual: pd.Series, expected: pd.Series) -> float:
     return np.mean(np.pow(actual - expected, 2))
 
-def preproc(df: pd.DataFrame, freq: str, timestamp: str, value: str, isint: bool) -> pd.Series:
+def preproc(df: pd.DataFrame, freq: str, timestamp: str, value: str, is_int: bool) -> pd.Series:
     timestamps = pd.to_datetime(df[timestamp])
 
     # Interpolate
@@ -34,17 +34,16 @@ def preproc(df: pd.DataFrame, freq: str, timestamp: str, value: str, isint: bool
     # Interpolate between removed outliers
     resampled = resampled.interpolate()
 
-    # Convert to integers (you cannot have 0.5 players in a game)
-    if isint:
+    if is_int:
         return pd.Series(resampled).astype(int)
     else:
         return pd.Series(resampled)
 
 
 DATASETS = [
+    # (name, frequency, time column, ddata column, is_int)
     ("csgo", "2D", "DateTime", "Players", True),
     ("mel", "1D", "Date", "Min Temp", False),
-
 ]
 SPLIT_PERCENT = 0.1 # Remove last 10% of dataset, and try and predict it
 
@@ -57,12 +56,12 @@ def main():
 
     metrics = []
 
-    for name, frequency, timestamp, value in DATASETS:
+    for name, frequency, timestamp, value, is_int in DATASETS:
         print(f"Analyzing dataset {name}")
         print("\tLoading dataset")
         df = pd.read_csv(data_dir / f"{name}.csv")
         print("\tPreprocessing dataset")
-        data = preproc(df, frequency, timestamp, value)
+        data = preproc(df, frequency, timestamp, value, is_int)
         print(f"\t\tProcessed dataset size: {len(data)}")
 
         print("\tSplitting dataset")
