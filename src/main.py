@@ -127,7 +127,7 @@ def main():
 
         fig.savefig(output_dir / f"{name}_prediction.png")
 
-        print("\t\t\tResiduals Vs Time")
+        print("\t\tResiduals Vs Time")
         residuals_arima = test_set - arima_prediction
         residuals_proph = test_set - proph_prediction
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
@@ -146,7 +146,7 @@ def main():
             ax.grid(alpha=0.5)
         fig.savefig(output_dir / f"{name}_residuals_time.png")
 
-        print("\t\t\tResiduals vs Fitted Values")
+        print("\t\tResiduals vs Fitted Values")
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 12))
         ax1.set_title(f"Residuals vs Fitted Values ({name}) - ARIMA{arima.order} & Prophet")
         ax1.scatter(arima_prediction, residuals_arima, label=f"ARIMA{arima.order}", color="blue")
